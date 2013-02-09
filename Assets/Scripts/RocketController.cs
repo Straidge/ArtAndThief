@@ -6,6 +6,7 @@ public class RocketController : MonoBehaviour {
 	
 	public float speed;
 	public Transform tr;
+	public GameObject boom;
 
 	void Start () {
 		tr = transform;
@@ -23,6 +24,8 @@ public class RocketController : MonoBehaviour {
 		if (other.tag == "Player") {
 			Application.LoadLevel(0);
 		}
+		
+		Instantiate(boom, transform.position, transform.rotation);
 		Destroy(gameObject);
 	}
 }

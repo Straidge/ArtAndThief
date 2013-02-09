@@ -28,6 +28,10 @@ public class PlayerController : MonoBehaviour {
 	
 	private bool onJoypadPush;
 	
+	public GameObject particlesCaught;
+	
+	public GUIStyle buttonStyle;
+	
 
 
 
@@ -120,8 +124,9 @@ public class PlayerController : MonoBehaviour {
 		#endif
 		
 		if (nearObject && Vector3.Dot(tr.forward, item.transform.position - tr.position) > 0 && !item.GetComponent<ItemToSteal>().caught) {
-			if (GUI.Button(actionRect, CatchPad)) {
+			if (GUI.Button(actionRect, CatchPad, buttonStyle)) {
 				item.GetComponent<ItemToSteal>().caught = true;
+				Instantiate(particlesCaught, item.transform.position, item.transform.rotation);
 				score ++;
 			}
 		}
@@ -134,8 +139,9 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter (Collider other) {
-		if (other.tag == "Exit") {
+		if (other.tag == "Exit" && score > 0) {
 			Etat = State.Winn;
+			StartCoroutine(WaitToReload());
 		}
 	}
 	
