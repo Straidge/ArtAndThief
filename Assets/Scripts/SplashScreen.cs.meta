@@ -2,6 +2,8 @@ fileFormatVersion: 2
 guid: 76441e642aa434a1e9beda8549e151a9
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - backgroundTexture: {fileID: 2800000, guid: 216c50986dfdc47d3bc7c03972db8ddd, type: 1}
+  - mainButtonTexture: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
