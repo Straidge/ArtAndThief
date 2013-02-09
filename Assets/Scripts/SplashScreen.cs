@@ -20,8 +20,8 @@ public class SplashScreen : MonoBehaviour {
   void OnGUI() {
     GUI.DrawTexture(backgroundArea, backgroundTexture);
 
-
     if (Time.timeSinceLevelLoad > buttonDelay) {
+      GUI.color = new Color(1, 1, 1, Mathf.Min(Time.timeSinceLevelLoad - buttonDelay, 1));
       GUI.DrawTexture(mainButtonArea, mainButtonTexture);
       if (GUI.Button(mainButtonArea, "", mainButtonStyle)) {
         Debug.Log("Boutton cliqué");
@@ -31,7 +31,7 @@ public class SplashScreen : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-    buttonDelay = 3;
+    buttonDelay = 1;
     buttonAnimationDelay = 0.5f;
     buttonPosX = 21 / 100f * Screen.width;
     buttonPosY = 77 / 100f * Screen.height;
@@ -49,9 +49,8 @@ public class SplashScreen : MonoBehaviour {
     // Delay one second before animation
     if (Time.timeSinceLevelLoad > buttonDelay) {
       buttonPosX = Mathf.SmoothDamp(buttonPosX, finalButtonPosX, ref buttonVelocityX, buttonAnimationDelay);
-        buttonPosY = Mathf.SmoothDamp(buttonPosY, finalButtonPosY, ref buttonVelocityY, buttonAnimationDelay);
-        mainButtonArea = new Rect(buttonPosX, buttonPosY,
-                                  mainButtonArea.width, mainButtonArea.height);
+      buttonPosY = Mathf.SmoothDamp(buttonPosY, finalButtonPosY, ref buttonVelocityY, buttonAnimationDelay);
+      mainButtonArea = new Rect(buttonPosX, buttonPosY, mainButtonArea.width, mainButtonArea.height);
     }
 	}
 }
