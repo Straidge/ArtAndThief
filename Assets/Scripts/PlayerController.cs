@@ -22,7 +22,13 @@ public class PlayerController : MonoBehaviour {
 		Lose
 	}
 	private State Etat;
-	public Texture JoyPad;
+	public Texture JoyPadOn;
+	public Texture JoyPadOff;
+	public Texture CatchPad;
+	
+	private bool onJoypadPush;
+	
+
 
 
 	void Start () {
@@ -36,8 +42,8 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		joyRect = new Rect ( 1/10f * Screen.width, 60/100f * Screen.height, 30/100f * Screen.height, 30/100f * Screen.height);
-		actionRect = new Rect ( Screen.width - 1/10f * Screen.width - 30/100f * Screen.height, 60/100f * Screen.height, 30/100f * Screen.height, 30/100f * Screen.height);
+		joyRect = new Rect ( 1/10f * Screen.width, 60/100f * Screen.height, 40/100f * Screen.height, 40/100f * Screen.height);
+		actionRect = new Rect ( Screen.width - 1/10f * Screen.width - 30/100f * Screen.height, 60/100f * Screen.height, 35/100f * Screen.height, 35/100f * Screen.height);
 	#if UNITY_EDITOR
 		dir = new Vector3 (Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 		tr.LookAt(tr.position + dir);
@@ -54,7 +60,25 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	Vector3 GetAxe () {
-		for (int i = 0; i < Input.touchCount; i++) {
+		
+		if (onJoypadPush) {
+			for (int i = 0; i < Input.touchCount; i++) {
+				Vector2 fingerPos = new Vector2 (Input.GetTouch(i).position.x, Screen.height - Input.GetTouch(i).position.y);
+				if (new Rect(0, 0, Screen.width/2f, Screen.height).Contains(fingerPos)) {
+					Vector2 sens = (fingerPos - new Vector2 (joyRect.x + joyRect.width/2f, joyRect.y + joyRect.height/2f)).normalized;
+					
+					if (Mathf.Abs(sens.x) > Mathf.Abs(sens.y))
+						sens = new Vector2(sens.x,0).normalized;
+					else
+						sens = new Vector2(0,sens.y).normalized;
+						
+					onJoypadPush = true;
+					return new Vector3 (sens.x, 0, -sens.y);
+				}
+			}
+		}
+		else {
+			for (int i = 0; i < Input.touchCount; i++) {
 			Vector2 fingerPos = new Vector2 (Input.GetTouch(i).position.x, Screen.height - Input.GetTouch(i).position.y);
 			if (joyRect.Contains(fingerPos)) {
 				Vector2 sens = (fingerPos - new Vector2 (joyRect.x + joyRect.width/2f, joyRect.y + joyRect.height/2f)).normalized;
@@ -63,18 +87,40 @@ public class PlayerController : MonoBehaviour {
 					sens = new Vector2(sens.x,0).normalized;
 				else
 					sens = new Vector2(0,sens.y).normalized;
-				
+					
+				onJoypadPush = true;
 				return new Vector3 (sens.x, 0, -sens.y);
+				}
+			}
+		}
+		onJoypadPush = false;
+		return Vector3.zero;
+		
+	}
+	
+	bool HoverJoyPad () {
+		for (int i = 0; i < Input.touchCount; i++) {
+			Vector2 fingerPos = new Vector2 (Input.GetTouch(i).position.x, Screen.height - Input.GetTouch(i).position.y);
+			if (joyRect.Contains(fingerPos)) {
+				return true;
 			}	
 		}
-		return Vector3.zero;
+		return false;
 	}
 	
 	
 	void OnGUI () {
-		GUI.DrawTexture(joyRect, JoyPad);
+		#if UNITY_EDITOR
+		
+		#else
+		if (onJoypadPush)
+			GUI.DrawTexture(joyRect, JoyPadOn);
+		else
+			GUI.DrawTexture(joyRect, JoyPadOff);
+		#endif
+		
 		if (nearObject && Vector3.Dot(tr.forward, item.transform.position - tr.position) > 0 && !item.GetComponent<ItemToSteal>().caught) {
-			if (GUI.Button(actionRect, JoyPad)) {
+			if (GUI.Button(actionRect, CatchPad)) {
 				item.GetComponent<ItemToSteal>().caught = true;
 				score ++;
 			}
@@ -84,7 +130,7 @@ public class PlayerController : MonoBehaviour {
 	
 	public void Lose () {
 		Etat = State.Lose;
-		//StartCoroutine(WaitToLose());
+		StartCoroutine(WaitToLose());
 	}
 	
 	void OnTriggerEnter (Collider other) {
@@ -93,8 +139,13 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 	
-	IEnumerable WaitToLose () {
+	IEnumerator WaitToLose () {
 		yield return new WaitForSeconds(2f);
-		
+		Application.LoadLevel(1);
+	}
+	
+	IEnumerator WaitToReload () {
+		yield return new WaitForSeconds(2f);
+		Application.LoadLevel(1);
 	}
 }
