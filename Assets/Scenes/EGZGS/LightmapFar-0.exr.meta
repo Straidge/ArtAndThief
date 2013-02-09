@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 55c087bbaf6a94ed8913cce7b6d3d042
+guid: 1673057ca811d4f4ab63bf5b744f583e
 TextureImporter:
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
-    linearTexture: 0
+    linearTexture: 1
     correctGamma: 0
     fadeOut: 0
     borderMipMap: 0
@@ -22,16 +22,12 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 1024
   textureSettings:
-    filterMode: -1
-    aniso: -1
+    filterMode: 1
+    aniso: 3
     mipBias: -1
-    wrapMode: -1
+    wrapMode: 1
   nPOTScale: 1
-  lightmap: 0
+  lightmap: 1
   compressionQuality: 50
-  textureType: -1
-  buildTargetSettings:
-  - buildTarget: Android
-    maxTextureSize: 128
-    textureFormat: -3
-    compressionQuality: 50
+  textureType: 6
+  buildTargetSettings: []
