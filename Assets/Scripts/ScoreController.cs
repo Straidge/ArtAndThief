@@ -18,7 +18,6 @@ public class ScoreController : MonoBehaviour {
 
   void Update() {
     GameObject.Find("Score Value").GetComponent<TextMesh>().text = score.ToString();
-    Debug.Log("Score : " + score);
   }
 
   public int getScore() {
