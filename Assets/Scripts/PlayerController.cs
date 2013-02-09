@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
-	
+
 	public CharacterController controller;
 	public float Nspeed;
 	private float Aspeed;
@@ -12,10 +12,9 @@ public class PlayerController : MonoBehaviour {
 	private Rect actionRect;
 	public bool nearObject;
 	public GameObject item;
-	public int score;
-	
+
 	public bool hide;
-	
+
 	private enum State {
 		Play,
 		Winn,
@@ -25,9 +24,9 @@ public class PlayerController : MonoBehaviour {
 	public Texture JoyPadOn;
 	public Texture JoyPadOff;
 	public Texture CatchPad;
-	
+
 	private bool onJoypadPush;
-	
+
 
 
 
@@ -39,7 +38,7 @@ public class PlayerController : MonoBehaviour {
 		joyRect = new Rect ( 1/10f * Screen.width, 60/100f * Screen.height, 30/100f * Screen.height, 30/100f * Screen.height);
 		actionRect = new Rect ( Screen.width - 1/10f * Screen.width - 30/100f * Screen.height, 60/100f * Screen.height, 30/100f * Screen.height, 30/100f * Screen.height);
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		joyRect = new Rect ( 1/10f * Screen.width, 60/100f * Screen.height, 40/100f * Screen.height, 40/100f * Screen.height);
@@ -58,20 +57,20 @@ public class PlayerController : MonoBehaviour {
 		if (Etat == State.Play)
 			controller.Move(tr.forward * Aspeed * Time.deltaTime);
 	}
-	
+
 	Vector3 GetAxe () {
-		
+
 		if (onJoypadPush) {
 			for (int i = 0; i < Input.touchCount; i++) {
 				Vector2 fingerPos = new Vector2 (Input.GetTouch(i).position.x, Screen.height - Input.GetTouch(i).position.y);
 				if (new Rect(0, 0, Screen.width/2f, Screen.height).Contains(fingerPos)) {
 					Vector2 sens = (fingerPos - new Vector2 (joyRect.x + joyRect.width/2f, joyRect.y + joyRect.height/2f)).normalized;
-					
+
 					if (Mathf.Abs(sens.x) > Mathf.Abs(sens.y))
 						sens = new Vector2(sens.x,0).normalized;
 					else
 						sens = new Vector2(0,sens.y).normalized;
-						
+
 					onJoypadPush = true;
 					return new Vector3 (sens.x, 0, -sens.y);
 				}
@@ -82,12 +81,12 @@ public class PlayerController : MonoBehaviour {
 			Vector2 fingerPos = new Vector2 (Input.GetTouch(i).position.x, Screen.height - Input.GetTouch(i).position.y);
 			if (joyRect.Contains(fingerPos)) {
 				Vector2 sens = (fingerPos - new Vector2 (joyRect.x + joyRect.width/2f, joyRect.y + joyRect.height/2f)).normalized;
-				
+
 				if (Mathf.Abs(sens.x) > Mathf.Abs(sens.y))
 					sens = new Vector2(sens.x,0).normalized;
 				else
 					sens = new Vector2(0,sens.y).normalized;
-					
+
 				onJoypadPush = true;
 				return new Vector3 (sens.x, 0, -sens.y);
 				}
@@ -95,55 +94,55 @@ public class PlayerController : MonoBehaviour {
 		}
 		onJoypadPush = false;
 		return Vector3.zero;
-		
+
 	}
-	
+
 	bool HoverJoyPad () {
 		for (int i = 0; i < Input.touchCount; i++) {
 			Vector2 fingerPos = new Vector2 (Input.GetTouch(i).position.x, Screen.height - Input.GetTouch(i).position.y);
 			if (joyRect.Contains(fingerPos)) {
 				return true;
-			}	
+			}
 		}
 		return false;
 	}
-	
-	
+
+
 	void OnGUI () {
 		#if UNITY_EDITOR
-		
+
 		#else
 		if (onJoypadPush)
 			GUI.DrawTexture(joyRect, JoyPadOn);
 		else
 			GUI.DrawTexture(joyRect, JoyPadOff);
 		#endif
-		
+
 		if (nearObject && Vector3.Dot(tr.forward, item.transform.position - tr.position) > 0 && !item.GetComponent<ItemToSteal>().caught) {
 			if (GUI.Button(actionRect, CatchPad)) {
 				item.GetComponent<ItemToSteal>().caught = true;
-				score ++;
+				//GetComponent<ScoreController>().addScore(item.GetComponent<ItemToSteal>().valeur);
+				GetComponent<ScoreController>().addScore(10);
 			}
 		}
-		GUI.Label(new Rect(0,0, Screen.width, Screen.height), score.ToString());
 	}
-	
+
 	public void Lose () {
 		Etat = State.Lose;
 		StartCoroutine(WaitToLose());
 	}
-	
+
 	void OnTriggerEnter (Collider other) {
 		if (other.tag == "Exit") {
 			Etat = State.Winn;
 		}
 	}
-	
+
 	IEnumerator WaitToLose () {
 		yield return new WaitForSeconds(2f);
 		Application.LoadLevel(1);
 	}
-	
+
 	IEnumerator WaitToReload () {
 		yield return new WaitForSeconds(2f);
 		Application.LoadLevel(1);
