@@ -14,7 +14,7 @@ public class CamController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		cible = GameObject.Find("Player - Voleur").transform;
+		//cible = GameObject.Find("Player - Voleur").transform;
 		tr = transform;
 	}
 	

@@ -17,14 +17,17 @@ public class PlayerController : MonoBehaviour {
 	public bool hide;
 	
 	private enum State {
-		Voleur,
-		Gardien
+		Play,
+		Winn,
+		Lose
 	}
 	private State Etat;
 	public Texture JoyPad;
 
 
 	void Start () {
+		Camera.main.transform.GetComponent<CamController>().cible = transform;
+		Etat = State.Play;
 		controller = GetComponent<CharacterController>();
 		tr = GetComponent<Transform>();
 		joyRect = new Rect ( 1/10f * Screen.width, 60/100f * Screen.height, 30/100f * Screen.height, 30/100f * Screen.height);
@@ -46,7 +49,8 @@ public class PlayerController : MonoBehaviour {
 		tr.LookAt(tr.position + dir);
 		Aspeed = Mathf.Min(Mathf.Abs(dir.x) + Mathf.Abs(dir.z), 1) * Nspeed;
 	#endif
-		controller.Move(tr.forward * Aspeed * Time.deltaTime);
+		if (Etat == State.Play)
+			controller.Move(tr.forward * Aspeed * Time.deltaTime);
 	}
 	
 	Vector3 GetAxe () {
@@ -76,5 +80,21 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 		GUI.Label(new Rect(0,0, Screen.width, Screen.height), score.ToString());
+	}
+	
+	public void Lose () {
+		Etat = State.Lose;
+		//StartCoroutine(WaitToLose());
+	}
+	
+	void OnTriggerEnter (Collider other) {
+		if (other.tag == "Exit") {
+			Etat = State.Winn;
+		}
+	}
+	
+	IEnumerable WaitToLose () {
+		yield return new WaitForSeconds(2f);
+		
 	}
 }
