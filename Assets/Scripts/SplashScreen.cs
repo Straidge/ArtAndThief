@@ -8,28 +8,50 @@ public class SplashScreen : MonoBehaviour {
   public Rect mainButtonArea;
   public Texture mainButtonTexture;
   public GUIStyle mainButtonStyle;
+  public float buttonPosX;
+  public float buttonPosY;
+  public float finalButtonPosY;
+  public float finalButtonPosX;
+  private float buttonVelocityX;
+  private float buttonVelocityY;
+  private float buttonDelay;
+  private float buttonAnimationDelay;
 
   void OnGUI() {
     GUI.DrawTexture(backgroundArea, backgroundTexture);
-    GUI.DrawTexture(mainButtonArea, mainButtonTexture);
-    if(GUI.Button(mainButtonArea, "", mainButtonStyle)) {
-      Debug.Log("Boutton cliqué");
+
+
+    if (Time.timeSinceLevelLoad > buttonDelay) {
+      GUI.DrawTexture(mainButtonArea, mainButtonTexture);
+      if (GUI.Button(mainButtonArea, "", mainButtonStyle)) {
+        Debug.Log("Boutton cliqué");
+      }
     }
   }
 
 	// Use this for initialization
 	void Start () {
-    float posX = 46 / 100f * Screen.width;
-    float posY = 59 / 100f * Screen.height;
+    buttonDelay = 3;
+    buttonAnimationDelay = 0.5f;
+    buttonPosX = 21 / 100f * Screen.width;
+    buttonPosY = 77 / 100f * Screen.height;
+    finalButtonPosX = 49 / 100f * Screen.width;
+    finalButtonPosY = 59 / 100f * Screen.height;
     float buttonWidth = 39 / 100f * Screen.width;
     float buttonHeight = 25 / 100f * Screen.height;
 
     backgroundArea = new Rect(0,0, Screen.width, Screen.height);
-    mainButtonArea = new Rect(posX, posY, buttonWidth, buttonHeight);
+    mainButtonArea = new Rect(buttonPosX, buttonPosY, buttonWidth, buttonHeight);
 	}
 
 	// Update is called once per frame
 	void Update () {
-
+    // Delay one second before animation
+    if (Time.timeSinceLevelLoad > buttonDelay) {
+      buttonPosX = Mathf.SmoothDamp(buttonPosX, finalButtonPosX, ref buttonVelocityX, buttonAnimationDelay);
+        buttonPosY = Mathf.SmoothDamp(buttonPosY, finalButtonPosY, ref buttonVelocityY, buttonAnimationDelay);
+        mainButtonArea = new Rect(buttonPosX, buttonPosY,
+                                  mainButtonArea.width, mainButtonArea.height);
+    }
 	}
 }
