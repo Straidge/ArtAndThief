@@ -77,7 +77,7 @@ public class BotController : MonoBehaviour {
 			controller.Move(tr.forward * Nspeed * 1.2f * Time.deltaTime);
 			GetComponent<FireController>().Fire();
 			
-			if (Vector3.Distance(transform.position, player.position) > 10 || Vector3.Dot(transform.forward, player.position - transform.position) < 0 || player.GetComponent<PlayerController>().hide || !Visible()) {
+			if (Vector3.Distance(transform.position, player.position) > 10 || Vector3.Dot(transform.forward, player.position - transform.position) < 0 || !Visible()) {
 				StartCoroutine(GoNevermind());
 			}
 		}
