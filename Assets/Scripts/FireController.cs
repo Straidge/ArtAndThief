@@ -1,15 +1,21 @@
 using UnityEngine;
 using System.Collections;
 
-public class RocketController : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
+public class FireController : MonoBehaviour {
 	
-	}
+	public GameObject rocket;
+	public Transform gun;
+	public float tCD;
+	private float t;
 	
-	// Update is called once per frame
 	void Update () {
-	
+		t += Time.deltaTime;
+	}
+
+	public void Fire () {
+		if (t > tCD) {
+			Instantiate(rocket, gun.position, gun.rotation);
+			t = 0;
+		}
 	}
 }
