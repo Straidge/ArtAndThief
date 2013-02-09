@@ -24,7 +24,7 @@ public class SplashScreen : MonoBehaviour {
       GUI.color = new Color(1, 1, 1, Mathf.Min(Time.timeSinceLevelLoad - buttonDelay, 1));
       GUI.DrawTexture(mainButtonArea, mainButtonTexture);
       if (GUI.Button(mainButtonArea, "", mainButtonStyle)) {
-        Debug.Log("Boutton cliqué");
+        Application.LoadLevel("Level1");
       }
     }
   }
