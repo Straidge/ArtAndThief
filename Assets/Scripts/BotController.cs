@@ -29,6 +29,11 @@ public class BotController : MonoBehaviour {
 	private Type type;
 	
 	public List<Transform> myPath = new List<Transform>();
+	private float posY;
+	
+	public GameObject exclamation;
+	
+	public List<AudioClip> stupAudio = new List<AudioClip>();
 
 
 	void Start () {
@@ -37,6 +42,7 @@ public class BotController : MonoBehaviour {
 		tr = GetComponent<Transform>();
 		myPath = ThePath.GetComponent<PathGarde>().pathGame;
 		SetTarget();
+		posY = transform.position.y;
 	}
 	
 	void SetTarget () {
@@ -52,15 +58,16 @@ public class BotController : MonoBehaviour {
 	bool Visible () {
 		RaycastHit hit;
 		if (!Physics.Raycast(transform.position, (player.position - transform.position).normalized, out hit, Vector3.Distance(transform.position, player.position),wallLayer)) {
-			Debug.Log("Visible");
 			return true;
 		}
-		Debug.Log("UnVisible");
 		return false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		
+		transform.position = new Vector3(transform.position.x, posY, transform.position.z);
+		
 		if (type == Type.Search) {
 			if (Vector3.Distance(transform.position, myPath[rank % myPath.Count].position) < 1) {
 				rank++;
@@ -110,11 +117,18 @@ public class BotController : MonoBehaviour {
 	}
 	
 	IEnumerator GoWTF() {
+		GameObject clone = Instantiate(exclamation, transform.position + Vector3.up * 3, exclamation.transform.rotation) as GameObject;
+		int test = Mathf.RoundToInt(Random.Range(0,9));
+		Debug.Log(test);
+		audio.PlayOneShot(stupAudio[test]);
+		Debug.Log (stupAudio[test]);
+		Destroy (clone, 1);
 		tr.LookAt(new Vector3(player.position.x, tr.position.y, player.position.z));
 		type = Type.WTF;
 		yield return new WaitForSeconds(1F);
-		if (Vector3.Dot(transform.forward, player.position - transform.position) > 0 && !player.GetComponent<PlayerController>().hide && Visible ())
+		if (Vector3.Dot(transform.forward, player.position - transform.position) > 0 && !player.GetComponent<PlayerController>().hide && Visible ()) {
 			type = Type.Focus;
+		}
 		else
 			type = Type.Search;
 	}
@@ -122,8 +136,12 @@ public class BotController : MonoBehaviour {
 	IEnumerator GoNevermind() {
 		type = Type.Nevermind;
 		yield return new WaitForSeconds(1F);
-		if (Vector3.Dot(transform.forward, player.position - transform.position) > 0 && !player.GetComponent<PlayerController>().hide && Visible ())
+		if (Vector3.Dot(transform.forward, player.position - transform.position) > 0 && !player.GetComponent<PlayerController>().hide && Visible ()) {
 			type = Type.Focus;
+			audio.PlayOneShot(stupAudio[Mathf.RoundToInt(Random.Range(0,9))]);
+			GameObject clone = Instantiate(exclamation, transform.position + Vector3.up * 3, exclamation.transform.rotation) as GameObject;
+			Destroy (clone, 1);
+		}
 		else
 			type = Type.Search;
 	}

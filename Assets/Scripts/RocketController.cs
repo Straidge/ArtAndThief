@@ -7,6 +7,8 @@ public class RocketController : MonoBehaviour {
 	public float speed;
 	public Transform tr;
 	public GameObject boom;
+	public AudioClip kaBoom;
+	public AudioClip kaBoomAlt;
 
 	void Start () {
 		tr = transform;
@@ -22,9 +24,12 @@ public class RocketController : MonoBehaviour {
 			other.GetComponent<ItemToSteal>().caught = true;
 		}
 		if (other.tag == "Player") {
-			Application.LoadLevel(0);
+			other.GetComponent<PlayerController>().Lose();
 		}
-		
+		if (Random.value > 0.5f)
+			audio.PlayOneShot(kaBoom);
+		else
+			audio.PlayOneShot(kaBoomAlt);
 		Instantiate(boom, transform.position, transform.rotation);
 		Destroy(gameObject);
 	}

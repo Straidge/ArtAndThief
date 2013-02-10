@@ -8,7 +8,7 @@ public class VoleurAnimator : MonoBehaviour {
  
 	private Vector2 _size;
 	private Renderer _myRenderer;
-	private int _lastIndex = -1;
+	private int _lastIndex = 0;
 	public Quaternion rot;
 	
 	public int sens;
