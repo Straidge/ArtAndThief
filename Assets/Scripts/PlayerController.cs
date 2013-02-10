@@ -32,6 +32,8 @@ public class PlayerController : MonoBehaviour {
 	
 	public GUIStyle buttonStyle;
 	
+	public GameObject anim;
+	
 
 
 
@@ -59,8 +61,36 @@ public class PlayerController : MonoBehaviour {
 		tr.LookAt(tr.position + dir);
 		Aspeed = Mathf.Min(Mathf.Abs(dir.x) + Mathf.Abs(dir.z), 1) * Nspeed;
 	#endif
+		
+		
+		
 		if (Etat == State.Play)
 			controller.Move(tr.forward * Aspeed * Time.deltaTime);
+		
+		anim.transform.rotation = anim.GetComponent<VoleurAnimator>().rot;
+		
+		
+		if (Vector3.Dot(tr.forward, Vector3.right) > 0) {
+			anim.GetComponent<VoleurAnimator>().sens = 1;
+			if (Aspeed == 0) {
+				anim.renderer.material.mainTextureOffset = new Vector2(-0.3f, 3);
+				anim.GetComponent<VoleurAnimator>().enabled = false;
+			}
+			else
+				anim.GetComponent<VoleurAnimator>().enabled = true;
+			
+		}
+		else {
+			anim.GetComponent<VoleurAnimator>().sens = -1;
+			if (Aspeed == 0) {
+				anim.renderer.material.mainTextureOffset = new Vector2(0.3f, 3);
+				anim.GetComponent<VoleurAnimator>().enabled = false;
+			}
+			else
+				anim.GetComponent<VoleurAnimator>().enabled = true;
+			
+			
+		}
 	}
 	
 	Vector3 GetAxe () {

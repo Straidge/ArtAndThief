@@ -18,6 +18,8 @@ public class BotController : MonoBehaviour {
 	
 	public float distanceToFocus;
 	
+	public GameObject anim;
+	
 	private enum Type {
 		Search,
 		Focus,
@@ -85,6 +87,26 @@ public class BotController : MonoBehaviour {
 		if (type == Type.Nevermind) {
 			controller.Move(tr.forward * Nspeed * 1.2f * Time.deltaTime);
 		}
+		
+		if (Vector3.Dot(tr.forward, Vector3.right) > 0) {
+			anim.GetComponent<GardienAnimator>().sens = 1;
+			if (type == Type.WTF) {
+				anim.renderer.material.mainTextureOffset = new Vector2(-0.3f, 3);
+				anim.GetComponent<GardienAnimator>().enabled = false;
+			}
+			else
+				anim.GetComponent<GardienAnimator>().enabled = true;
+		}
+		else {
+			anim.GetComponent<GardienAnimator>().sens = -1;
+			if (type == Type.WTF) {
+				anim.renderer.material.mainTextureOffset = new Vector2(0.3f, 3);
+				anim.GetComponent<GardienAnimator>().enabled = false;
+			}
+			else
+				anim.GetComponent<GardienAnimator>().enabled = true;
+		}
+		anim.transform.rotation = anim.GetComponent<GardienAnimator>().rot;
 	}
 	
 	IEnumerator GoWTF() {
