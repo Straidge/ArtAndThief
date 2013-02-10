@@ -121,6 +121,7 @@ public class PlayerController : MonoBehaviour {
 		if (nearObject && Vector3.Dot(tr.forward, item.transform.position - tr.position) > 0 && !item.GetComponent<ItemToSteal>().caught) {
 			if (GUI.Button(actionRect, CatchPad)) {
 				item.GetComponent<ItemToSteal>().caught = true;
+				Instantiate(particlesCaught, item.transform.position, item.transform.rotation);
 				//GetComponent<ScoreController>().addScore(item.GetComponent<ItemToSteal>().valeur);
 				GetComponent<ScoreController>().addScore(10);
 			}
@@ -133,7 +134,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void OnTriggerEnter (Collider other) {
-		if (other.tag == "Exit") {
+		if (other.tag == "Exit" && GetComponent<ScoreController>().getScore() > 0) {
 			Etat = State.Winn;
 		}
 	}
